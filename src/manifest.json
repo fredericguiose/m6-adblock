@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "M6 Direct — Anti-Pub",
+  "version": "1.0.0",
+  "description": "Desactive les publicites et le detecteur d'adblock sur le direct M6 / 6play / M6+.",
+  "permissions": ["declarativeNetRequest", "declarativeNetRequestFeedback", "cookies", "storage"],
+  "action": {
+    "default_title": "M6 Anti-Pub — pubs bloquees"
+  },
+  "host_permissions": [
+    "*://*.m6.fr/*",
+    "*://*.6play.fr/*",
+    "*://*.m6web.fr/*",
+    "*://*.fwmrm.net/*",
+    "*://*.stickyadstv.com/*",
+    "*://*.videoplaza.tv/*",
+    "*://*.smartadserver.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "m6-ads",
+        "enabled": true,
+        "path": "rules/net-rules.json"
+      }
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.m6.fr/*",
+        "*://*.6play.fr/*",
+        "*://*.m6web.fr/*"
+      ],
+      "js": ["page-bypass.js", "consent.js"],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": true
+    }
+  ]
+}

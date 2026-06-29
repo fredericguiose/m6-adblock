@@ -1,0 +1,17 @@
+# Dépendances
+/node_modules
+
+# Build (régénéré via `npm run build`)
+/dist
+
+# Résidus Chrome (extension chargée non empaquetée)
+**/_metadata
+
+# Logs / divers
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+.env
+.vscode
+.idea

@@ -1,0 +1,27 @@
+{
+  "name": "m6-adblock",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Extension MV3 anti-pub + anti-détection adblock pour le direct M6 / 6play / M6+.",
+  "author": "Frederic Guiose <frederic@portalstudio.fr>",
+  "license": "MIT",
+  "homepage": "https://github.com/fredericguiose/m6-adblock#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fredericguiose/m6-adblock.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fredericguiose/m6-adblock/issues"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "watch": "node build.mjs --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.268",
+    "esbuild": "^0.21.5",
+    "typescript": "^5.4.5"
+  }
+}

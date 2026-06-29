@@ -1,0 +1,51 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "requestDomains": ["stickyadstv.com"],
+      "resourceTypes": ["media", "image", "object", "sub_frame"]
+    }
+  },
+  {
+    "id": 2,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "requestDomains": ["smartadserver.com", "videoplaza.tv"],
+      "resourceTypes": ["script", "xmlhttprequest", "media", "image", "sub_frame"]
+    }
+  },
+  {
+    "id": 3,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "requestDomains": [
+        "tealiumiq.com",
+        "tiqcdn.com",
+        "newrelic.com",
+        "nr-data.net",
+        "google-analytics.com",
+        "analytics.google.com",
+        "googletagmanager.com",
+        "doubleclick.net",
+        "connect.facebook.net",
+        "facebook.com",
+        "outbrain.com",
+        "criteo.com",
+        "criteo.net",
+        "gemius.pl",
+        "kameleoon.com",
+        "kameleoon.eu",
+        "tagcommander.com",
+        "commander1.com",
+        "bttrack.com",
+        "scorecardresearch.com"
+      ],
+      "initiatorDomains": ["m6.fr", "6play.fr", "m6web.fr"],
+      "resourceTypes": ["script", "xmlhttprequest", "image", "sub_frame", "ping"]
+    }
+  }
+]
