@@ -32,9 +32,8 @@ Aucune télémétrie, aucun analytics, aucun serveur distant.
 - **`declarativeNetRequest`** : appliquer les règles de blocage pub/traceurs.
 - **`cookies`** + accès aux hôtes M6 : supprimer localement les cookies de
   traçage tiers. Aucun cookie n'est lu à des fins de collecte.
-- **`storage`** : réservé à d'éventuels réglages locaux de l'extension.
-- **Accès aux hôtes** (`m6.fr`, `6play.fr`, `m6web.fr` et régies pub) : limiter
-  strictement l'action de l'extension à ces sites.
+- **Accès aux hôtes** (`m6.fr`, `6play.fr`, `m6web.fr`) : limiter strictement
+  l'action de l'extension à ces seuls sites.
 
 ## Contact
 

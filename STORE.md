@@ -74,8 +74,7 @@ m6web.fr) et y refuser le consentement publicitaire.
 ```
 declarativeNetRequest : appliquer les règles de blocage pub/traceurs.
 cookies : supprimer localement les cookies de traçage tiers sur les domaines M6.
-storage : stocker d'éventuels réglages locaux.
-Accès aux hôtes : limiter l'action de l'extension aux seuls sites M6 et régies.
+Accès aux hôtes : limiter l'action de l'extension aux seuls sites M6.
 ```
 
 **Données utilisateur** : cocher « **Je ne collecte aucune donnée utilisateur** »
