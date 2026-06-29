@@ -3,6 +3,10 @@
 Désactive les publicités **et** le détecteur d'adblock sur le direct
 **M6 / 6play / M6+** (`https://www.m6.fr/m6/direct`).
 
+> Projet indépendant et **non officiel**, sans aucun lien avec le groupe M6.
+> Usage strictement personnel. Voir [STORE.md](STORE.md) pour la publication
+> sur le Chrome Web Store et [PRIVACY.md](PRIVACY.md) pour la confidentialité.
+
 ## Comment ça marche
 
 M6 utilise un détecteur d'adblock « poussé ». Le bloquer bêtement au niveau

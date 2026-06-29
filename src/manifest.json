@@ -3,9 +3,21 @@
   "name": "M6 Direct — Anti-Pub",
   "version": "1.0.0",
   "description": "Desactive les publicites et le detecteur d'adblock sur le direct M6 / 6play / M6+.",
-  "permissions": ["declarativeNetRequest", "declarativeNetRequestFeedback", "cookies", "storage"],
+  "permissions": ["declarativeNetRequest", "cookies", "storage"],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
   "action": {
-    "default_title": "M6 Anti-Pub — pubs bloquees"
+    "default_title": "M6 Anti-Pub — pubs bloquees",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
   },
   "host_permissions": [
     "*://*.m6.fr/*",

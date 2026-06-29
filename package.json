@@ -17,6 +17,8 @@
   "scripts": {
     "build": "node build.mjs",
     "watch": "node build.mjs --watch",
+    "icons": "node tools/make-icons.mjs",
+    "package": "node tools/package.mjs",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

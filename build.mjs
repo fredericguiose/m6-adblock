@@ -21,6 +21,7 @@ function copyStatic() {
   mkdirSync('dist/rules', { recursive: true });
   copyFileSync('src/manifest.json', 'dist/manifest.json');
   cpSync('src/rules', 'dist/rules', { recursive: true });
+  cpSync('src/icons', 'dist/icons', { recursive: true });
 }
 
 if (watch) {

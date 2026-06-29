@@ -4,6 +4,13 @@
 # Build (régénéré via `npm run build`)
 /dist
 
+# Paquets de release (régénérés via `npm run package`)
+/release
+
+# Clés de signature et paquets Chrome (NE JAMAIS COMMITTER une clé privée)
+*.pem
+*.crx
+
 # Résidus Chrome (extension chargée non empaquetée)
 **/_metadata
 
