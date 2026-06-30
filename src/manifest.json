@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "M6 Direct — Anti-Pub",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Desactive les publicites et le detecteur d'adblock sur le direct M6 / 6play / M6+.",
   "permissions": ["declarativeNetRequest", "cookies"],
   "icons": {

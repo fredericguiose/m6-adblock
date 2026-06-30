@@ -1,11 +1,18 @@
 /**
  * consent.ts — MAIN world, document_start.
- * Gere le mur de consentement / cookies de tracking de M6 SANS rien "accepter" :
- *   1. via la CMP (Didomi / TCF) : on refuse tout le tracking des qu'elle est prete.
- *   2. fallback DOM : on clique automatiquement "Continuer sans accepter" /
- *      "Tout refuser" si le bouton apparait.
- * Refuser est une reponse valide pour la CMP : la banniere se ferme et le choix
- * est memorise (cookie de consentement), donc le contenu reste accessible.
+ *
+ * M6 impose un "cookie wall" payant : la SEULE option gratuite est "Accepter".
+ * "Refuser" renvoie vers l'abonnement, donc un refus auto ne ferme jamais le mur
+ * -> la banniere reviendrait a chaque visite.
+ *
+ * Strategie : on "accepte" dans la CMP pour fermer le mur et memoriser le choix
+ * (plus de popup), MAIS le pistage reel reste neutralise au niveau reseau par le
+ * ruleset DNR + page-bypass (GA, Tealium, Criteo, FreeWheel...). "Accepter" ici
+ * n'est qu'un leurre pour satisfaire le mur : aucune requete de tracking ne part.
+ *
+ *   1. via la CMP (Didomi / TCF) : setUserAgreeToAll() des qu'elle est prete.
+ *   2. fallback DOM : clic auto sur "Accepter" / "Tout accepter" (jamais le
+ *      bouton d'abonnement payant, garde-fou PAYWALL).
  */
 (() => {
   'use strict';
@@ -20,39 +27,41 @@
 
   const w = window as any;
 
-  // -- 1) Didomi : refuser tout le tracking des qu'il est pret ----------------
+  // -- 1) Didomi : accepter pour fermer le mur des qu'il est pret -------------
+  // (le tracking reste coupe cote reseau ; c'est juste pour passer le mur)
   try {
     w.didomiOnReady = w.didomiOnReady || [];
     w.didomiOnReady.push((Didomi: any) => {
       try {
-        if (typeof Didomi?.setUserDisagreeToAll === 'function') {
-          Didomi.setUserDisagreeToAll();
-          log('Didomi -> refus de tout le tracking');
+        if (typeof Didomi?.setUserAgreeToAll === 'function') {
+          Didomi.setUserAgreeToAll();
+          log('Didomi -> consentement accepte (mur ferme ; tracking bloque cote reseau)');
         }
       } catch (e) {
-        log('Didomi: refus impossible', e);
+        log('Didomi: acceptation impossible', e);
       }
     });
   } catch {
     /* noop */
   }
 
-  // -- 2) Fallback DOM : cliquer le bouton de refus ---------------------------
-  // On vise explicitement le refus (jamais "Accepter").
-  const REFUSE =
-    /continuer sans accepter|tout refuser|je refuse|refuser et fermer|reject all|continue without accepting|necessaires? uniquement|essential(s)? only/i;
-  const ACCEPT_ONLY = /^accepter|tout accepter|j'accepte|accept all$/i;
+  // -- 2) Fallback DOM : cliquer le bouton "Accepter" -------------------------
+  // On vise l'acceptation gratuite, JAMAIS le bouton d'abonnement payant.
+  const ACCEPT =
+    /tout accepter|j'accepte|accepter (?:&|et) (?:fermer|continuer)|continuer en acceptant|^accepter\b|accept(?: all| & close| and continue)?$|i agree/i;
+  const PAYWALL =
+    /abonn|s'abonner|souscri|payer|paiement|premium|sans publicit|subscribe|pay\b/i;
 
-  function tryClickRefuse(): boolean {
+  function tryClickAccept(): boolean {
     const nodes = document.querySelectorAll<HTMLElement>(
-      'button, a, span, div[role="button"], [class*="refuse"], [id*="refuse"], [class*="deny"]',
+      'button, a, span, div[role="button"], [class*="accept"], [id*="accept"], [class*="agree"]',
     );
     for (const el of Array.from(nodes)) {
       const label = (el.getAttribute('aria-label') || el.textContent || '').trim();
       if (!label || label.length > 60) continue;
-      if (REFUSE.test(label) && !ACCEPT_ONLY.test(label)) {
+      if (ACCEPT.test(label) && !PAYWALL.test(label)) {
         el.click();
-        log('clic auto sur le refus ->', JSON.stringify(label));
+        log('clic auto sur "Accepter" ->', JSON.stringify(label));
         return true;
       }
     }
@@ -71,7 +80,7 @@
   };
 
   const mo = new MutationObserver(() => {
-    if (!done && tryClickRefuse()) finish();
+    if (!done && tryClickAccept()) finish();
   });
 
   const start = (): void => {
@@ -80,7 +89,7 @@
     } catch {
       /* noop */
     }
-    if (tryClickRefuse()) finish();
+    if (tryClickAccept()) finish();
   };
 
   // filet de securite : on retente quelques secondes (la banniere arrive tard)
@@ -91,7 +100,7 @@
       clearInterval(iv);
       return;
     }
-    tryClickRefuse() && finish();
+    tryClickAccept() && finish();
   }, 500);
 
   if (document.readyState === 'loading') {
@@ -100,5 +109,5 @@
     start();
   }
 
-  log('module consentement actif (refus auto du tracking)');
+  log('module consentement actif (acceptation auto du mur ; tracking bloque cote reseau)');
 })();

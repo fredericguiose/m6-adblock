@@ -1,6 +1,6 @@
 {
   "name": "m6-adblock",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "type": "module",
   "description": "Extension MV3 anti-pub + anti-détection adblock pour le direct M6 / 6play / M6+.",
