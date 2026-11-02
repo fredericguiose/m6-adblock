@@ -16,14 +16,17 @@ Projet non officiel, usage personnel.
 npm install
 npm run build      # esbuild -> dist/ (à charger dans chrome://extensions, non empaqueté)
 npm run watch      # rebuild auto pendant le dev
-npm run typecheck  # tsc --noEmit, mode strict (PAS de tests dans ce repo)
+npm run typecheck  # tsc --noEmit, mode strict
+npm run check:version # cohérence package / lockfile / manifest Chrome, tag facultatif
+npm test           # régressions hors réseau (node:test, VM et esbuild)
 npm run icons      # régénère src/icons/icon{16,32,48,128}.png (générateur PNG maison)
 npm run package    # build propre + release/m6-adblock-v<version>.zip (encodeur ZIP maison)
 ```
 
-Il n'y a **pas de framework de test ni de linter** : `npm run typecheck` est la seule
-vérification automatisée. `tsconfig.json` est en `noEmit` (esbuild fait le bundling) et
-`strict` + `noUnusedLocals`/`noUnusedParameters` — du code mort fait échouer le typecheck.
+Il n'y a **pas de framework de test externe ni de linter** : `npm test` utilise
+`node:test`, une VM et esbuild, sans réseau. `tsconfig.json` est en `noEmit` (esbuild
+fait le bundling) et `strict` + `noUnusedLocals`/`noUnusedParameters` — du code mort
+fait échouer le typecheck.
 
 ## Architecture
 
@@ -83,6 +86,13 @@ est pilotée par la config `applaunch` + FreeWheel.
 
 ## Publication
 
-Outils & guides : `tools/package.mjs` (zip), `STORE.md` (Chrome Web Store), `EDGE.md`
-(Edge Add-ons), `PRIVACY.md`. Bumper la version **à la fois** dans `package.json` et
-`src/manifest.json`.
+Outils & guides : `tools/package.mjs` (zip), `RELEASING.md` (CI et Release Please),
+`STORE.md` (Chrome Web Store), `EDGE.md` (Edge Add-ons), `PRIVACY.md`.
+
+Le cycle normal passe par la PR de version de Release Please, sans bump manuel.
+`package.json`, les deux versions racine de `package-lock.json` et
+`src/manifest.json` doivent rester synchronisés (`npm run check:version`). Le
+packager refuse un désalignement avant de supprimer `dist/`. Les tags stables
+`vX.Y.Z` doivent correspondre à cette version. Les workflows sont dans
+`.github/workflows/` ; ne pas attendre un événement de tag créé par `GITHUB_TOKEN`
+pour déclencher le build automatique. Voir `RELEASING.md` pour les permissions.

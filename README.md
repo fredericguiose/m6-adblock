@@ -31,7 +31,17 @@ npm install
 npm run build      # génère dist/
 npm run watch      # rebuild auto pendant le dev
 npm run typecheck  # vérif TypeScript stricte
+npm run check:version # cohérence package / lockfile / manifest Chrome
+npm test           # régressions locales sans réseau ni dépendance supplémentaire
 ```
+
+## Changelog et builds automatiques
+
+[CHANGELOG.md](CHANGELOG.md) suit les versions. Release Please prépare les PR de
+version ; GitHub Actions teste l'extension, construit le ZIP et le joint aux
+releases après fusion. Les tags manuels `vX.Y.Z` sont aussi pris en charge.
+Activation du bot, conventions de commits et reprise d'un build :
+[RELEASING.md](RELEASING.md).
 
 ## Installation (Chrome / Edge / Brave)
 
@@ -46,8 +56,13 @@ npm run typecheck  # vérif TypeScript stricte
 Ouvre la console (F12) avec le filtre niveau **Verbose** :
 
 - `[M6-AntiPub] actif …` → le script s'est injecté à temps.
-- `[M6-AntiPub] config pub elaguee …` → la config `applaunch` a été nettoyée.
-- `[M6-AntiPub] XHR/fetch pub neutralise …` → un appel FreeWheel a été court-circuité.
+- `[M6-AntiPub] config pub NETTOYEE …` → la config `applaunch` a été nettoyée.
+- `[M6-AntiPub] XHR/fetch/beacon pub/tracking neutralise …` → un appel ciblé a été court-circuité.
+- Les clés publicitaires sont affichées **après nettoyage** : les interrupteurs
+  `featureFlipping.ad`, `featureFlipping.player.dai` et `features.antiBlocker.ADS`
+  doivent apparaître à `false`. Les traductions et l'audiodescription sont préservées.
+- Les images/scripts bloqués par DNR peuvent toujours produire `ERR_BLOCKED_BY_CLIENT`.
+  Les compteurs de diagnostic ne prouvent pas, à eux seuls, la lecture d'une vidéo.
 - Le badge de l'icône compte les requêtes pub bloquées par DNR.
 
 ## Limites honnêtes

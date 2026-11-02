@@ -1,0 +1,25 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "bootstrap-sha": "e3cfa1c9d14f68c08183b7afaf870f0dc6c1c793",
+  "include-component-in-tag": false,
+  "include-v-in-tag": true,
+  "draft": true,
+  "force-tag-creation": true,
+  "pull-request-title-pattern": "chore${scope}: prépare la version ${version}",
+  "changelog-sections": [
+    { "type": "feat", "section": "Nouveautés" },
+    { "type": "fix", "section": "Corrections" },
+    { "type": "perf", "section": "Performances" },
+    { "type": "revert", "section": "Annulations" },
+    { "type": "deps", "section": "Dépendances" }
+  ],
+  "packages": {
+    ".": {
+      "release-type": "node",
+      "changelog-path": "CHANGELOG.md",
+      "extra-files": [
+        { "type": "json", "path": "src/manifest.json", "jsonpath": "$.version" }
+      ]
+    }
+  }
+}

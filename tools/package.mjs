@@ -14,8 +14,9 @@ import { deflateRawSync } from 'node:zlib';
 import { execSync } from 'node:child_process';
 import { readFileSync, readdirSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
+import { checkVersion } from './check-version.mjs';
 
-const { version } = JSON.parse(readFileSync('package.json', 'utf8'));
+const version = checkVersion({ tag: process.env.RELEASE_TAG });
 const out = `release/m6-adblock-v${version}.zip`;
 
 // --- build propre (dist vide -> pas de _metadata residuel) -----------------
