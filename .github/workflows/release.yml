@@ -1,0 +1,102 @@
+name: Changelog et releases
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag existant à reconstruire (vX.Y.Z), facultatif'
+        required: false
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: release-${{ github.ref }}-${{ inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    if: github.ref_type == 'branch' && github.ref_name == 'main' && inputs.tag == ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - name: Préparer le changelog et la PR de version
+        id: release
+        uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+      - name: Déclencher les contrôles de la PR de version
+        if: steps.release.outputs.pr != '' && steps.release.outputs.pr != 'null'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_PR: ${{ steps.release.outputs.pr }}
+        run: |
+          number="$(jq -r '.number // empty' <<< "$RELEASE_PR")"
+          if [[ -n "$number" ]]; then
+            state="$(gh pr view "$number" --json state --jq '.state')"
+            if [[ "$state" == 'OPEN' ]]; then
+              branch="$(gh pr view "$number" --json headRefName --jq '.headRefName')"
+              gh workflow run ci.yml --ref "$branch"
+            fi
+          fi
+
+  publish:
+    name: Construire et publier le ZIP
+    needs: release-please
+    if: >-
+      always() && !cancelled() &&
+      (needs.release-please.outputs.release_created == 'true' ||
+       github.ref_type == 'tag' || inputs.tag != '')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: publish-${{ needs.release-please.outputs.tag_name || inputs.tag || github.ref_name }}
+      cancel-in-progress: false
+    permissions:
+      contents: write
+    env:
+      RELEASE_TAG: ${{ needs.release-please.outputs.tag_name || inputs.tag || github.ref_name }}
+    steps:
+      - name: Vérifier la forme du tag avant le checkout
+        run: |
+          if [[ ! "$RELEASE_TAG" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
+            printf 'Tag invalide : %s\n' "$RELEASE_TAG" >&2
+            exit 1
+          fi
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: refs/tags/${{ env.RELEASE_TAG }}
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run check:version -- "$RELEASE_TAG"
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run package
+      - name: Joindre le ZIP et publier la release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          version="$(node -p 'require("./package.json").version')"
+          archive="release/m6-adblock-v${version}.zip"
+          if ! gh release view "$RELEASE_TAG" > /dev/null 2>&1; then
+            gh release create "$RELEASE_TAG" --verify-tag --draft --title "$RELEASE_TAG" --generate-notes
+          fi
+          gh release upload "$RELEASE_TAG" "$archive" --clobber
+          gh release edit "$RELEASE_TAG" --draft=false

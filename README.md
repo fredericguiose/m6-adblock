@@ -31,8 +31,17 @@ npm install
 npm run build      # génère dist/
 npm run watch      # rebuild auto pendant le dev
 npm run typecheck  # vérif TypeScript stricte
+npm run check:version # cohérence package / lockfile / manifest Chrome
 npm test           # régressions locales sans réseau ni dépendance supplémentaire
 ```
+
+## Changelog et builds automatiques
+
+[CHANGELOG.md](CHANGELOG.md) suit les versions. Release Please prépare les PR de
+version ; GitHub Actions teste l'extension, construit le ZIP et le joint aux
+releases après fusion. Les tags manuels `vX.Y.Z` sont aussi pris en charge.
+Activation du bot, conventions de commits et reprise d'un build :
+[RELEASING.md](RELEASING.md).
 
 ## Installation (Chrome / Edge / Brave)
 
