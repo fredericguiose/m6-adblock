@@ -16,14 +16,16 @@ Projet non officiel, usage personnel.
 npm install
 npm run build      # esbuild -> dist/ (à charger dans chrome://extensions, non empaqueté)
 npm run watch      # rebuild auto pendant le dev
-npm run typecheck  # tsc --noEmit, mode strict (PAS de tests dans ce repo)
+npm run typecheck  # tsc --noEmit, mode strict
+npm test           # régressions hors réseau (node:test, VM et esbuild)
 npm run icons      # régénère src/icons/icon{16,32,48,128}.png (générateur PNG maison)
 npm run package    # build propre + release/m6-adblock-v<version>.zip (encodeur ZIP maison)
 ```
 
-Il n'y a **pas de framework de test ni de linter** : `npm run typecheck` est la seule
-vérification automatisée. `tsconfig.json` est en `noEmit` (esbuild fait le bundling) et
-`strict` + `noUnusedLocals`/`noUnusedParameters` — du code mort fait échouer le typecheck.
+Il n'y a **pas de framework de test externe ni de linter** : `npm test` utilise
+`node:test`, une VM et esbuild, sans réseau. `tsconfig.json` est en `noEmit` (esbuild
+fait le bundling) et `strict` + `noUnusedLocals`/`noUnusedParameters` — du code mort
+fait échouer le typecheck.
 
 ## Architecture
 

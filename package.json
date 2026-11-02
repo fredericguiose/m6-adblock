@@ -19,7 +19,8 @@
     "watch": "node build.mjs --watch",
     "icons": "node tools/make-icons.mjs",
     "package": "node tools/package.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tools/page-bypass.test.mjs"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.268",
